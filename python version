@@ -1,0 +1,59 @@
+import numpy as np
+from matplotlib import pyplot as plt
+from scipy import signal
+plt.style.use("seaborn-poster")
+
+fc1 = float(input("Enter the frequency of carrier 1 in Hz: "))
+fc2 = float(input("Enter the frequency of carrier 2 in Hz: "))
+fp = float(input("Enter the freq of Periodic Binary pulse (Message) in Hz:"))
+amp = float(input('Enter the amplitude (For Both Carrier & Binary Pulse Message):'))
+amp = amp/2
+t = np.linspace(0,1,1000)
+c1 = amp * (np.sin(2*np.pi*fc1*t))
+c2 = amp * (np.sin(2*np.pi*fc2*t))
+
+plt.subplot(5,1,1)
+plt.plot(t,c1)
+plt.xlabel("time")
+plt.ylabel("Amplitude")
+plt.title("Carrier 1 wave")
+
+plt.subplot(5,1,2)
+plt.plot(t,c2,'r')
+plt.xlabel("time")
+plt.ylabel("Amplitude")
+plt.title("Carrier 2 wave")
+
+m = amp * signal.square(2*np.pi*fp*t) + amp
+plt.subplot(5,1,3)
+plt.plot(t,m,'k')
+plt.xlabel("time")
+plt.ylabel("Amplitude")
+plt.title("Binary pulse signal")
+
+mm = []
+for ii in range(1000):
+    if m[ii] == 0:
+        mm.append(c2[ii])
+    else:
+        mm.append(c1[ii])
+        
+plt.subplot(5,1,4)
+plt.plot(t,mm,'m')
+plt.xlabel('Time')
+plt.ylabel('Amplitude')
+plt.title('Modulated signal')
+
+demod = []
+for ii in range(len(mm)):
+    if mm[ii] == c1[ii]:
+        demod.append(4)
+    elif mm[ii] == c2[ii]:
+        demod.append(0)
+plt.subplot(5,1,5)
+plt.xlabel("time")
+plt.ylabel("Amplitude")
+plt.title("Demodulated Signal")
+plt.plot(t,demod,'g')
+plt.tight_layout()
+plt.show()
